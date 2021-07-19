@@ -5,8 +5,12 @@
 모터 제어를 위한 테스트 소스코드 <br>
 ### rgb_test.py <br>
 RGB LED 제어를 위한 테스트 소스코드 <br>
+### distance_test.py <br>
+거리 측정을 위한 초음파센서 테스트 소스코드 <br>
 ### finddust+rgb_test.py <br>
 미세먼지 수치에 따른 RGB LED 제어 테스트 소스코드 <br>
+### finddust+rgb+distance_test.py <br>
+미세먼지 수치 + RGB LED 제어 + 거리 측정 테스트 소스코드 <br>
 ## 라즈베리파이 실행시 설치 파일 <br>
 ### beautifulsoup <br>
 HTML 을 XML 형식의 파이썬 객체로 변환하여 웹 페이지의 정보를 탐색하는데 도움을 줌 <br>
