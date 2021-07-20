@@ -11,7 +11,7 @@ RGB LED 제어를 위한 테스트 소스코드 <br>
 미세먼지 수치에 따른 RGB LED 제어 테스트 소스코드 <br>
 ### finddust+rgb+distance_test.py <br>
 미세먼지 수치 + RGB LED 제어 + 거리 측정 테스트 소스코드 <br>
-### SmartWindow <br>
+### SmartWindow.py <br>
 최종코드 <br>
 ## 라즈베리파이 실행시 설치 파일 <br>
 ### beautifulsoup <br>
