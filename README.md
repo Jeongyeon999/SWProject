@@ -18,3 +18,4 @@
 [4. 소스코드](https://github.com/Jeongyeon999/SWProject/tree/master/4.%EC%86%8C%EC%8A%A4%EC%BD%94%EB%93%9C)<br>
 [5. 최종결과보고서](https://github.com/Jeongyeon999/SWProject/tree/master/5.%EC%B5%9C%EC%A2%85%EA%B2%B0%EA%B3%BC%EB%B3%B4%EA%B3%A0%EC%84%9C)<br>
 [6. 최종발표자료](https://github.com/Jeongyeon999/SWProject/tree/master/6.%EC%B5%9C%EC%A2%85%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C)<br>
+[7. 시연영상](https://github.com/Jeongyeon999/SWProject/tree/master/7.%EC%8B%9C%EC%97%B0%EC%98%81%EC%83%81)<br>
