@@ -13,9 +13,8 @@ motor_pin = 18 # 모터의 핀번호
 trig = 23 # trig 핀번호
 echo = 24 # echo 핀번호
 
-# 모터 각도
-motor_c = 8
-motor_o = 6
+motor_c = 6
+motor_o = 8
 motor_s = 7
 
 GPIO.setmode(GPIO.BCM) # BCM2835 CPU 칩의 신호 이름 사용
@@ -27,7 +26,7 @@ GPIO.setup(led_g, GPIO.OUT)
 GPIO.setup(led_b, GPIO.OUT)
 # Motor
 GPIO.setup(motor_pin, GPIO.OUT)
-# Distance
+# Ultrasonic
 GPIO.setup(trig, GPIO.OUT)
 GPIO.setup(echo, GPIO.IN)
 
@@ -40,7 +39,7 @@ motor = GPIO.PWM(motor_pin, 50) # frequency = 50
 angle = 7 # 초기값 (모터 정지 상태)
 motor.start(angle)
 
-location = input("input:")
+location = input("지역:")
 while(True):
     # 미세먼지 수치 크롤링
     input_location = urllib.parse.quote(location + '미세먼지')
@@ -57,168 +56,163 @@ while(True):
     ultra_fine_dust = (soup.find('div', class_='state_info _ultrafine_dust')
           .find('span', class_='num _value').text)
 
-    # 측정 불가
     if(fine_dust == "-" or ultra_fine_dust == "-"):
         GPIO.output(led_b, GPIO.HIGH)
-        #####
+        #############################
         while(True):
             GPIO.output(trig, False)
             time.sleep(0.5)
-                    
+            
             GPIO.output(trig, True)
             time.sleep(0.00001)
             GPIO.output(trig, False)
-                
+            
             while GPIO.input(echo) == False: 
                 pulse_start = time.time()
-                    
+            
             while GPIO.input(echo) == True: 
                 pulse_end = time.time()
 
             pulse_duration = pulse_end - pulse_start 
             distance = pulse_duration * 17000
             distance = round(distance, 2)
-            print("Distance : ", distance, "cm")
 
-            if(distance > 15): # 창문 닫혀있으면 창문 열기
-                motor.ChangeDutyCycle(motor_o)
-            elif(distance < 5): # 창문 다 열리면 모터 멈추기
+            # 창문 닫혀있으면 열기
+            motor.ChangeDutyCycle(motor_o)            
+            if(distance <= 6):
                 motor.ChangeDutyCycle(motor_s)
                 break
-        #####
-        print("데이터 측정 불가 좋음")
-        print(fine_dust + " " + ultra_fine_dust)
+        ##############################
+        
+        print("미세먼지: " + fine_dust)
+        print("초미세먼지: " + ultra_fine_dust)
+        print("미세먼지 상태: 측정불가(좋음)")
         
     else:
-        # 정수형으로 바꾸기
         i_fine_dust = int(fine_dust)
         i_ultra_fine_dust = int(ultra_fine_dust)
-
-        # 매우나쁨
+        
         if(i_fine_dust > 150 or i_ultra_fine_dust > 75):
             GPIO.output(led_r, GPIO.HIGH)
-            #####
+            #############################
             while(True):
                 GPIO.output(trig, False)
                 time.sleep(0.5)
-
+                
                 GPIO.output(trig, True)
                 time.sleep(0.00001)
                 GPIO.output(trig, False)
                 
                 while GPIO.input(echo) == False: 
                     pulse_start = time.time()
-                    
+                
                 while GPIO.input(echo) == True: 
                     pulse_end = time.time()
 
                 pulse_duration = pulse_end - pulse_start 
                 distance = pulse_duration * 17000
                 distance = round(distance, 2)
-                print("Distance : ", distance, "cm")
 
-                if(distance < 8): # 창문 조금이라도 열려있으면
-                    motor.ChangeDutyCycle(motor_c)
-                elif(distance > 15): # 창문 다 닫히면
+                # 창문 열려 있으면 닫기
+                motor.ChangeDutyCycle(motor_c)
+                if(distance >= 11.3):
                     motor.ChangeDutyCycle(motor_s)
                     break
-            #####
-            print("매우 나쁨")
-            print(fine_dust + " " + ultra_fine_dust)
+            ##############################
+            print("미세먼지: " + fine_dust)
+            print("초미세먼지: " + ultra_fine_dust)
+            print("미세먼지 상태: 매우 나쁨")
             
-        # 나쁨
         elif(i_fine_dust > 80 or i_ultra_fine_dust > 35):
             GPIO.output(led_r, GPIO.HIGH)
             GPIO.output(led_b, GPIO.HIGH)
-            #####
+            #############################
             while(True):
                 GPIO.output(trig, False)
                 time.sleep(0.5)
-                    
+                
                 GPIO.output(trig, True)
                 time.sleep(0.00001)
                 GPIO.output(trig, False)
                 
                 while GPIO.input(echo) == False: 
                     pulse_start = time.time()
-                    
+                
                 while GPIO.input(echo) == True: 
                     pulse_end = time.time()
 
                 pulse_duration = pulse_end - pulse_start 
                 distance = pulse_duration * 17000
                 distance = round(distance, 2)
-                print("Distance : ", distance, "cm")
 
-                if(distance < 8): # 창문 조금이라도 열려있으면
-                    motor.ChangeDutyCycle(motor_c)
-                elif(distance > 15): # 창문 다 닫히면
+                # 창문 열려 있으면 닫기
+                motor.ChangeDutyCycle(motor_c)
+                if(distance >= 11.3):
                     motor.ChangeDutyCycle(motor_s)
                     break
-            #####
-            print("나쁨")
-            print(fine_dust + " " + ultra_fine_dust) 
-
-        # 보통
+            ##############################
+            print("미세먼지: " + fine_dust)
+            print("초미세먼지: " + ultra_fine_dust)
+            print("미세먼지 상태: 나쁨")
+            
         elif(i_fine_dust > 30 or i_ultra_fine_dust > 15):
             GPIO.output(led_g, GPIO.HIGH)
-            #####
+            #############################
             while(True):
                 GPIO.output(trig, False)
                 time.sleep(0.5)
-                    
+                
                 GPIO.output(trig, True)
                 time.sleep(0.00001)
                 GPIO.output(trig, False)
                 
                 while GPIO.input(echo) == False: 
                     pulse_start = time.time()
-                    
+                
                 while GPIO.input(echo) == True: 
                     pulse_end = time.time()
 
                 pulse_duration = pulse_end - pulse_start 
                 distance = pulse_duration * 17000
                 distance = round(distance, 2)
-                print("Distance : ", distance, "cm")
 
-                if(distance > 15): # 창문 닫혀있으면 열기
-                    motor.ChangeDutyCycle(motor_o)
-                elif(distance < 5): # 창문 다 열리면 멈추기
+                # 창문 닫혀있으면 열기
+                motor.ChangeDutyCycle(motor_o)
+                if(distance <= 6):
                     motor.ChangeDutyCycle(motor_s)
                     break
-            #####
-            print("보통")
-            print(fine_dust + " " + ultra_fine_dust)
+            ##############################
+            print("미세먼지: " + fine_dust)
+            print("초미세먼지: " + ultra_fine_dust)
+            print("미세먼지 상태: 보통")
             
-        # 좋음
         else:
             GPIO.output(led_b, GPIO.HIGH)
-            #####
+            #############################
             while(True):
                 GPIO.output(trig, False)
                 time.sleep(0.5)
-                    
+                
                 GPIO.output(trig, True)
                 time.sleep(0.00001)
                 GPIO.output(trig, False)
                 
                 while GPIO.input(echo) == False: 
                     pulse_start = time.time()
-                    
+                
                 while GPIO.input(echo) == True: 
                     pulse_end = time.time()
 
-                pulse_duration = pulse_end - pulse_start 
+                pulse_duration = pulse_end - pulse_start
                 distance = pulse_duration * 17000
                 distance = round(distance, 2)
-                print("Distance : ", distance, "cm")
 
-                if(distance > 15): # 창문 닫혀있으면 열기
-                    motor.ChangeDutyCycle(motor_o)
-                elif(distance < 5): # 창문 다 열리면 멈추기
+                # 창문 닫혀있으면 열기
+                motor.ChangeDutyCycle(motor_o)
+                if(distance <= 6):
                     motor.ChangeDutyCycle(motor_s)
                     break
-            #####
-            print("좋음")
-            print(fine_dust + " " +  ultra_fine_dust)
+            ##############################
+            print("미세먼지: " + fine_dust)
+            print("초미세먼지: " + ultra_fine_dust)
+            print("미세먼지 상태: 좋음")
